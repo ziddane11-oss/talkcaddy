@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,7 +13,6 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 
 export default function Home() {
-  const { user, loading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
