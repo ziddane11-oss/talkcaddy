@@ -10,8 +10,31 @@ import { setupGlobalErrorHandlers } from "./lib/errorHandler";
 import { getApiBaseUrl } from "./lib/appUrl";
 import "./index.css";
 
+const cleanupLegacyCaches = async () => {
+  if (typeof window === "undefined") return;
+
+  if ("serviceWorker" in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+    } catch (error) {
+      console.warn("[Cache Cleanup] Failed to unregister service workers.", error);
+    }
+  }
+
+  if ("caches" in window) {
+    try {
+      const cacheKeys = await caches.keys();
+      await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+    } catch (error) {
+      console.warn("[Cache Cleanup] Failed to clear caches.", error);
+    }
+  }
+};
+
 // 글로벌 에러 핸들러 설정
 setupGlobalErrorHandlers();
+void cleanupLegacyCaches();
 
 const queryClient = new QueryClient();
 
