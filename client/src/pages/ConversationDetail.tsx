@@ -25,6 +25,14 @@ export default function ConversationDetail() {
   const [uploadId, setUploadId] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzingMultiple, setIsAnalyzingMultiple] = useState(false);
+  const normalizeAnalysisError = (message?: string | null) => {
+    if (!message) return "분석 중 오류가 발생했습니다.";
+    const lower = message.toLowerCase();
+    if (lower.includes("heart") || message.includes("하트")) {
+      return "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+    }
+    return message;
+  };
 
   // 대화방 정보 조회
   const { data: conversation, isLoading: conversationLoading } = trpc.conversations.get.useQuery(
@@ -55,7 +63,7 @@ export default function ConversationDetail() {
     },
     onError: (error) => {
       setAnalysisStep("error");
-      setAnalysisError(error.message || "분석 중 오류가 발생했습니다.");
+      setAnalysisError(normalizeAnalysisError(error.message));
     },
   });
 
@@ -192,7 +200,7 @@ export default function ConversationDetail() {
       }, 500);
     } catch (error: any) {
       setAnalysisStep("error");
-      setAnalysisError(error.message || "분석 중 오류가 발생했습니다.");
+      setAnalysisError(normalizeAnalysisError(error.message));
     }
   };
 
